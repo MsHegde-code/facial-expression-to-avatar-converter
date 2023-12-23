@@ -27,22 +27,26 @@ emotion_model.add(Flatten())
 emotion_model.add(Dense(1024, activation='relu'))
 emotion_model.add(Dropout(0.5))
 emotion_model.add(Dense(7, activation='softmax'))
-emotion_model.load_weights('model.h5')
+emotion_model.load_weights('src/model.h5')
 cv2.ocl.setUseOpenCL(False)
 
 emotion_dict = {0: "angry",
                 1: "happy",
                 2: "neutral",
                 3: "sad",
-                4: "surprised"}
+                4: "surprised",
+                5: "disgusted",
+                6: "fearful"}
 cur_path = os.path.dirname(os.path.abspath(__file__))
 
-emoji_dist = {
+emoji_dict = {
     0: cur_path+"/emojis/angry.png",
     1: cur_path+"/emojis/happy.png",
     2: cur_path+"/emojis/neutral.png",
     3: cur_path+"/emojis/sad.png",
-    4: cur_path+"/emojis/surprised.png"
+    4: cur_path+"/emojis/surprised.png",
+    5: cur_path+"/emojis/disgusted.png",
+    6: cur_path+"/emojis/fearful.png"
 }
 
 global last_frame1
@@ -53,12 +57,13 @@ global frame_number
 
 
 def show_subject():
-    cap1 = cv2.VideoCapture(0)
+    # /home/msh/Downloads
+    cap1 = cv2.VideoCapture("C:\Users\manit\OneDrive\Pictures\Camera Roll\vid.mp4")
     if not cap1.isOpened():
         print("Can't open the camera")
     global frame_number
     length = int(cap1.get(cv2.CAP_PROP_FRAME_COUNT))
-    frame_number += 1
+    frame_number += 2
     if frame_number >= length:
         exit()
     cap1.set(1, frame_number)
@@ -68,7 +73,7 @@ def show_subject():
         "C:\Python311\Lib\site-packages\cv2\data\haarcascade_frontalface_default.xml")
     gray_frame = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
     num_faces = bounding_box.detectMultiScale(
-        gray_frame, scaleFactor=1.3, minNeighbors=5)
+        gray_frame, scaleFactor=1.3, minNeighbors=8)
     for (x, y, w, h) in num_faces:
         cv2.rectangle(frame1, (x, y-50), (x+w, y+h+10), (255, 0, 0), 2)
         roi_gray_frame = gray_frame[y:y + h, x:x + w]
@@ -96,13 +101,14 @@ def show_subject():
 
 
 def show_avatar():
-    frame2 = cv2.imread(emoji_dist[show_text[0]])
+    # global show_text, imgtk2
+    frame2 = cv2.imread(emoji_dict[show_text[0]])
     pic2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB)
     img2 = Image.fromarray(pic2)
     imgtk2 = ImageTk.PhotoImage(image=img2)
     lmain2.imgtk2 = imgtk2
     lmain3.configure(
-        text=emotion_dict[show_text[0]], font=('arial', 30, 'bold'))
+        text=emotion_dict[show_text[0]], font=('Arial', 30, 'bold'))
     lmain2.configure(image=imgtk2)
     root.update()
     lmain2.after(10, show_avatar)
@@ -114,18 +120,23 @@ if __name__ == '__main__':
     root = tk.Tk()
     lmain = tk.Label(master=root, padx=50, bd=10)
     lmain2 = tk.Label(master=root, bd=10)
-    lmain3 = tk.Label(master=root, bd=10, fg="#CDCDCD", bg='black')
+
+    lmain3 = tk.Label(master=root, bd=10, fg="#FFFFFF", bg='black')
+    # main video playback
     lmain.pack(side=LEFT)
     lmain.place(x=50, y=250)
+    # 3-> avatar TEXT
     lmain3.pack()
-    lmain3.place(x=960, y=250)
+    lmain3.place(x=980, y=250)
+    # 2-> avatar display
     lmain2.pack(side=RIGHT)
-    lmain2.place(x=900, y=350)
+    lmain2.place(x=860, y=250)
+    # window
     root.title("Photo To Avatar")
-    root.geometry("1500x1000+100+10")
+    root.geometry("1400x1000+100+10")
     root['bg'] = 'black'
-    exitButton = Button(root, text='Close', fg="red", command=root.destroy, font=(
-        'arial', 25, 'bold')).pack(side=BOTTOM)
+    exitButton = Button(root, text='Close', fg="red", font=(
+        'Arial', 20, 'bold'), command=root.destroy).pack(side=BOTTOM)
     threading.Thread(target=show_subject).start()
     threading.Thread(target=show_avatar).start()
     root.mainloop()
