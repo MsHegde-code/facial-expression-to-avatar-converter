@@ -38,11 +38,11 @@ emotion_dict = {0: "angry",
 cur_path = os.path.dirname(os.path.abspath(__file__))
 
 emoji_dist = {
-    0: cur_path+"/emoji/angry.png",
-    1: cur_path+"/emoji/happy.png",
-    2: cur_path+"/emoji/neutral.png",
-    3: cur_path+"/emoji/sad.png",
-    4: cur_path+"/emoji/surprised.png"
+    0: cur_path+"/emojis/angry.png",
+    1: cur_path+"/emojis/happy.png",
+    2: cur_path+"/emojis/neutral.png",
+    3: cur_path+"/emojis/sad.png",
+    4: cur_path+"/emojis/surprised.png"
 }
 
 global last_frame1
@@ -98,11 +98,11 @@ def show_subject():
 def show_avatar():
     frame2 = cv2.imread(emoji_dist[show_text[0]])
     pic2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB)
-    img2 = Image.fromarray(frame2)
+    img2 = Image.fromarray(pic2)
     imgtk2 = ImageTk.PhotoImage(image=img2)
     lmain2.imgtk2 = imgtk2
     lmain3.configure(
-        text=emotion_dict[show_text[0]], font=('arial', 45, 'bold'))
+        text=emotion_dict[show_text[0]], font=('arial', 30, 'bold'))
     lmain2.configure(image=imgtk2)
     root.update()
     lmain2.after(10, show_avatar)
@@ -121,11 +121,10 @@ if __name__ == '__main__':
     lmain3.place(x=960, y=250)
     lmain2.pack(side=RIGHT)
     lmain2.place(x=900, y=350)
-
     root.title("Photo To Avatar")
-    root.geometry("1400x900+100+10")
+    root.geometry("1500x1000+100+10")
     root['bg'] = 'black'
-    exitButton = Button(root, text='Quit', fg="red", command=root.destroy, font=(
+    exitButton = Button(root, text='Close', fg="red", command=root.destroy, font=(
         'arial', 25, 'bold')).pack(side=BOTTOM)
     threading.Thread(target=show_subject).start()
     threading.Thread(target=show_avatar).start()
