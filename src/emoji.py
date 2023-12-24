@@ -58,7 +58,7 @@ global frame_number
 
 def show_subject():
     # /home/msh/Downloads
-    cap1 = cv2.VideoCapture("C:\Users\manit\OneDrive\Pictures\Camera Roll\vid.mp4")
+    cap1 = cv2.VideoCapture("data/examples/vid.mp4")
     if not cap1.isOpened():
         print("Can't open the camera")
     global frame_number
