@@ -1,16 +1,20 @@
+import tensorflow as tf
+import threading
+from keras.preprocessing.image import ImageDataGenerator
+from keras.layers import MaxPooling2D
+from keras.optimizers import Adam
+from keras.layers import Conv2D
+from keras.layers import Dense, Dropout, Flatten
+from keras.models import Sequential
+import numpy as np
 import tkinter as tk
 from tkinter import *
 import cv2
 from PIL import Image, ImageTk
 import os
-import numpy as np
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D
-from keras.optimizers import Adam
-from keras.layers import MaxPooling2D
-from keras.preprocessing.image import ImageDataGenerator
-import threading
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+# tf.disable_v1_behavior()
+
 
 emotion_model = Sequential()
 emotion_model.add(Conv2D(32, kernel_size=(
@@ -57,7 +61,7 @@ global frame_number
 
 
 def show_subject():
-    # /home/msh/Downloads
+    # /home/msh/Downloads, "data/examples/vid.mp4"
     cap1 = cv2.VideoCapture("data/examples/vid.mp4")
     if not cap1.isOpened():
         print("Can't open the camera")
